@@ -6,7 +6,6 @@ function MemoryGame({ images }) {
   const [shuffledImg, setShuffledImages] = useState([]);
   const [placeholderList, setPlaceHolderList] = useState([]);
   const [sameImageCheck, setSameImageCheck] = useState(null);
-  const [sameImages, setSameImages] = useState([]);
   const [startflag, setStartFlag] = useState(0);
 
   useEffect(() => {
@@ -42,7 +41,6 @@ function MemoryGame({ images }) {
       setPlaceHolderList(newList);
 
       if (shuffledImg[i] === sameImageCheck.src) {
-        setSameImages((prev) => [...prev, sameImageCheck.index, i]);
         setSameImageCheck(null);
       } else {
         setTimeout(() => {
