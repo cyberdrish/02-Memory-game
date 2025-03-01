@@ -1,19 +1,16 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
+
 const placeholderimage =
   "https://img.freepik.com/free-photo/gray-painted-background_53876-94041.jpg?size=626&ext=jpg&ga=GA1.1.2008272138.1727654400&semt=ais_hybrid";
 
 function MemoryGame({ images }) {
-  const [shuffledImg, setShuffledImages] = useState([]);
-  const [placeholderList, setPlaceHolderList] = useState([]);
+  const shuffledImg = useMemo(() => shuffle([...images, ...images]), [images]);
+
+  const [placeholderList, setPlaceHolderList] = useState(() =>
+    new Array(shuffledImg.length).fill(placeholderimage)
+  );
   const [sameImageCheck, setSameImageCheck] = useState(null);
   const [startflag, setStartFlag] = useState(0);
-
-  useEffect(() => {
-    const doubled = [...images, ...images];
-    const shuffled = shuffle(doubled);
-    setShuffledImages(shuffled);
-    setPlaceHolderList(new Array(shuffled.length).fill(placeholderimage));
-  }, [images]);
 
   function shuffle(array) {
     let currentI = array.length;
@@ -24,21 +21,24 @@ function MemoryGame({ images }) {
     }
     return array;
   }
-
   const handleShowImage = (e, i) => {
     if (placeholderList[i] !== placeholderimage) return;
     setStartFlag((prev) => prev + 1);
 
     if (sameImageCheck == null) {
       setSameImageCheck({ src: shuffledImg[i], index: i });
-      const newList = [...placeholderList];
-      newList[i] = shuffledImg[i];
-      setPlaceHolderList(newList);
+      setPlaceHolderList((prev) => {
+        const newList = [...prev];
+        newList[i] = shuffledImg[i];
+        return newList;
+      });
     } else {
       if (i === sameImageCheck.index) return;
-      const newList = [...placeholderList];
-      newList[i] = shuffledImg[i];
-      setPlaceHolderList(newList);
+      setPlaceHolderList((prev) => {
+        const newList = [...prev];
+        newList[i] = shuffledImg[i];
+        return newList;
+      });
 
       if (shuffledImg[i] === sameImageCheck.src) {
         setSameImageCheck(null);
